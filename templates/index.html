@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+   <script type="text/javascript" src='//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js'></script>
+   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+   <script type="text/javascript">
+   $(document).ready(function () {
+         $.ajaxSetup({ cache: false });
+         var tz = jstz.determine();
+
+         if (typeof (tz) !== 'undefined') {
+            tz_name = tz.name();
+	        var update = function() {
+                $.getJSON('/getpics/' + tz_name, function(data) {
+                    if (data.meimg) {
+                        $('#tome').html('Me - ' + data.me);
+                        $('#tome_img').attr('src', data.meimg);
+                    }
+                    if (data.youimg) {
+                        $('#toyou').html('You - ' + data.you);
+                        $('#toyou_img').attr('src', data.youimg);
+                    }
+                });
+	        };
+	        update();
+            setInterval(update, 60000);
+         }
+
+     });
+   </script>
+</head>
+<body>
+    <div id="mewrapper" style="float: left; width: 49%;">
+    	<div id="tome"></div>
+	    <img id="tome_img" />
+    </div>
+    <div id="youwrapper" style="float: right; width: 49%;">
+    	<div id="toyou"></div>
+	    <img id="toyou_img" />
+    </div>
+</body>
+</html>
