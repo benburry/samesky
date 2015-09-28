@@ -57,11 +57,7 @@ def pics(timezone):
         'youimg': youimg
     }
 
-    return Response(json.dumps(res), mimetype='application/json')
-
-
-@app.after_request
-def nocache_header(response):
+    response = Response(json.dumps(res), mimetype='application/json')
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '-1'
