@@ -1,0 +1,21 @@
+html {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#tz, #time {
+    font-family: Lato;
+    margin-left: 20px;
+    color: white;
+}
+
+#time {
+    font-size: 8em;
+}
+
+#tz {
+    margin-top: 20px;
+    font-size: 4em;
+}
