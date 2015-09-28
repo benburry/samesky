@@ -8,7 +8,7 @@ import sys
 
 app = Flask(__name__, static_folder='pics')
 file_fmt = '%Y-%m-%d_%H-%M'
-display_fmt = '%a, %-d %B %Y %-I:%M %p'
+display_fmt = '%-I:%M %p'
 mytimezone = 'Europe/London'
 
 
@@ -51,10 +51,16 @@ def pics(timezone):
         x += 1
 
     res = {
-        'me': '%s: %s' % (mytimezone, metime.strftime(display_fmt)),
-        'you': '%s: %s' % (timezone, youtime.strftime(display_fmt)),
-        'meimg': meimg,
-        'youimg': youimg
+        'me': {
+            'tz': mytimezone,
+            'time': metime.strftime(display_fmt),
+            'img': meimg,
+        },
+        'you': {
+            'tz': timezone,
+            'time': youtime.strftime(display_fmt),
+            'img': youimg,
+        }
     }
 
     response = Response(json.dumps(res), mimetype='application/json')

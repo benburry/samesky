@@ -10,19 +10,20 @@
 
          if (typeof (tz) !== 'undefined') {
             tz_name = tz.name();
-	        var update = function() {
+
+            var update = function() {
                 $.getJSON('/getpics/' + tz_name, function(data) {
-                    if (data.meimg) {
-                        $('#tome').html('Me - ' + data.me);
-                        $('#tome_img').attr('src', data.meimg);
-                    }
-                    if (data.youimg) {
-                        $('#toyou').html('You - ' + data.you);
-                        $('#toyou_img').attr('src', data.youimg);
+        		    if (data.me.img) {
+        			    $('#tome').html('Me - ' + data.me.tz + ': ' + data.me.time);
+        			    $('#tome_img').attr('src', data.me.img);
+        		    }
+        		    if (data.you.img) {
+        			    $('#toyou').html('You - ' + data.you.tz + ': ' + data.you.time);
+        			    $('#toyou_img').attr('src', data.you.img);
                     }
                 });
-	        };
-	        update();
+            };
+            update();
             setInterval(update, 60000);
          }
 
