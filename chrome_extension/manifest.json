@@ -4,7 +4,7 @@
   "manifest_version": 2,
   "minimum_chrome_version": "10.0",
 
-  "homepage_url": "https://github.com/benburry/tometoyou",
+  "homepage_url": "https://github.com/benburry/samesky",
 
   "icons": {
     "16": "icons/mrbenn_16.png",
