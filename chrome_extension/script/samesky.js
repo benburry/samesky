@@ -14,8 +14,7 @@ $(document).ready(function () {
                 if (data.me.img) {
                     img = new Image();
                     img.onload = function () {
-                        tz_display = data.me.tz.split('/')[1].replace('_', ' ');
-                        $('#tz').html(tz_display);
+                        $('#tz').html(data.me.display_tz);
                         $('#time').html(data.me.time);
 
                         $('html').css('background', "url('" + img.src + "') no-repeat center center fixed");
