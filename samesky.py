@@ -28,8 +28,8 @@ def writeimage():
     import picamera
     now = datetime.datetime.utcnow().replace(second=0, microsecond=0, tzinfo=pytz.utc)
     with picamera.PiCamera() as camera:
-        for k, v in camera_opts:
-            camera.setattr(k, v)
+        for k, v in camera_opts.iteritems():
+            setattr(camera, k, v)
         camera.capture(os.path.join(app.static_folder, '%s.jpg' % now.strftime(file_fmt)))
 
 
