@@ -13,9 +13,10 @@ html {
 
 #time {
     font-size: 8em;
+    cursor: pointer;
 }
 
 #tz {
     margin-top: 20px;
-    font-size: 4em;
+    font-size: 3.2em;
 }
