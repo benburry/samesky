@@ -3,3 +3,4 @@
 *.pem
 .DS_Store
 local_settings.py
+pics/*.jpg
