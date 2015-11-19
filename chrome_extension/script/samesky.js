@@ -4,44 +4,46 @@ $(document).ready(function () {
 
 
   chrome.storage.sync.get({
-    endpoint_url: 'http://home.burry.name:5000'
+    endpoint_url: 'http://home.burry.name:5000',
+    address: 'London',
   }, function(items) {
     var baseurl = items.endpoint_url;
+    var address = items.address;
+
     $.ajaxSetup({ cache: false });
-    var tz = jstz.determine();
 
-    if (typeof (tz) !== 'undefined') {
-        tz_name = tz.name();
+    var render = function() {
+        if (datacache) {
+            var whichdata = menotyou ? datacache.me : datacache.you;
+            if (whichdata.img) {
+                img = new Image();
+                img.onload = function () {
+                    console.log('onload');
+                    console.log(whichdata);
+                    $('#tz').html(whichdata.display_tz + '&nbsp;&nbsp;' + whichdata.temp.c + '&deg;C/' + whichdata.temp.f + '&deg;F');
+                    $('#time').html(whichdata.time);
 
-        var render = function() {
-            if (datacache) {
-                var whichdata = menotyou ? datacache.me : datacache.you;
-                if (whichdata.img) {
-                    img = new Image();
-                    img.onload = function () {
-                        $('#tz').html(whichdata.display_tz);
-                        $('#time').html(whichdata.time);
-
-                        $('html').css('background', "url('" + img.src + "') no-repeat center center fixed");
-                        $('html').css('-webkit-background-size', 'cover');
-                    };
-                    img.src = baseurl + whichdata.img;
-                }
+                    $('html').css('background', "url('" + img.src + "') no-repeat center center fixed");
+                    $('html').css('-webkit-background-size', 'cover');
+                };
+                img.src = baseurl + whichdata.img;
             }
-        };
+        }
+    };
 
-        var update = function() {
-            $.getJSON(baseurl + '/getpics/' + tz_name, function(data) {
-                datacache = data;
-                render();
-            });
-        };
-
-        $("#time").click(function() {
-            menotyou = !menotyou;
+    var update = function() {
+        $.getJSON(baseurl + '/samesky/' + address, function(data) {
+            console.log('render');
+            datacache = data;
             render();
         });
-    }
+    };
+
+    $("#time").click(function() {
+        menotyou = !menotyou;
+        render();
+    });
+
     update();
     setInterval(update, 60000);
   });

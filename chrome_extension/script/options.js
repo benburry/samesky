@@ -1,8 +1,10 @@
 // Saves options to chrome.storage.sync.
 function save_options() {
   var endpoint_url = document.getElementById('endpoint_url').value;
+  var address = document.getElementById('address').value;
   chrome.storage.sync.set({
-    endpoint_url: endpoint_url
+    endpoint_url: endpoint_url,
+    address: address
   }, function() {
     // Update status to let user know options were saved.
     var status = document.getElementById('status');
@@ -17,10 +19,11 @@ function save_options() {
 // stored in chrome.storage.
 function restore_options() {
   chrome.storage.sync.get({
-    endpoint_url: 'http://home.burry.name:5000'
+    endpoint_url: 'http://home.burry.name:5000',
+    address: 'London, England'
   }, function(items) {
     document.getElementById('endpoint_url').value = items.endpoint_url;
-    document.getElementById('like').checked = items.likesColor;
+    document.getElementById('address').value = items.address;
   });
 }
 document.addEventListener('DOMContentLoaded', restore_options);
