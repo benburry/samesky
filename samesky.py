@@ -70,7 +70,14 @@ def writeimage():
 
 
 def findimage(date, delta):
-    for targetdate in (date - delta, date + delta):
+    day = datetime.timedelta(days=1)
+    for targetdate in (
+            date - delta,
+            date + delta,
+            date - delta - day,
+            date - delta + day,
+            date + delta - day,
+            date + delta + day):
         d = '%s.jpg' % targetdate.strftime(file_fmt)
         path = os.path.join(app.static_folder, d)
         if os.path.exists(path):
