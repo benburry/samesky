@@ -88,7 +88,7 @@ def writeimage():
 
             if int(m.group('framecount')) >= 120:
                 subprocess.call(['/usr/bin/gifsicle', '-b', prev_gifpath, '--delete', '"#0"'])
-        subprocess.call(['/usr/bin/gifsicle', '-i', prev_gifpath, '--append', tmpgifpath, '--loopcount=forever', '-o', gifpath])
+        subprocess.call(['/usr/bin/gifsicle', '-i', prev_gifpath, '--append', tmpgifpath, '--loopcount=forever', '--colors', '256', '-o', gifpath])
     except:
         shutil.copy(tmpgifpath, gifpath)
     os.remove(tmpgifpath)
