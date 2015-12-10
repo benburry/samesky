@@ -8,6 +8,10 @@ import datetime
 import pytz
 import os
 import sys
+import subprocess
+import tempfile
+import shutil
+import re
 
 
 app = Flask(__name__, static_folder='pics')
@@ -63,10 +67,31 @@ def init():
 def writeimage():
     import picamera
     now = datetime.datetime.utcnow().replace(second=0, microsecond=0, tzinfo=pytz.utc)
+    tmpgifpath = os.path.join(tempfile.gettempdir(), '%s.gif' % now.strftime(file_fmt))
     with picamera.PiCamera() as camera:
         for k, v in camera_opts.iteritems():
             setattr(camera, k, v)
-        camera.capture(os.path.join(app.static_folder, '%s.jpg' % now.strftime(file_fmt)))
+        camera.capture(os.path.join(app.static_folder, '%s.jpg' % now.strftime(file_fmt)), format='jpeg', thumbnail=None)
+        camera.capture(tmpgifpath, format='gif')
+
+    prev_gif_filename = '%s.gif' % (now - datetime.timedelta(minutes=1)).strftime(file_fmt)
+    prev_gifpath = os.path.join(app.static_folder, prev_gif_filename)
+    gifpath = os.path.join(app.static_folder, '%s.gif' % now.strftime(file_fmt))
+    try:
+        prev_gif_info = subprocess.check_output(['/usr/bin/gifsicle', '-I', prev_gifpath])
+
+        p = re.compile(r'%s (?P<framecount>\d+) image' % prev_gif_filename)
+        m = p.search(prev_gif_info)
+        framecount = None
+        if m:
+            framecount = m.group('framecount')
+
+            if int(m.group('framecount')) >= 120:
+                subprocess.call(['/usr/bin/gifsicle', '-b', prev_gifpath, '--delete', '"#0"'])
+        subprocess.call(['/usr/bin/gifsicle', '-i', prev_gifpath, '--append', tmpgifpath, '--loopcount=forever', '-o', gifpath])
+    except:
+        shutil.copy(tmpgifpath, gifpath)
+    os.remove(tmpgifpath)
 
 
 def findimage(date, delta):
