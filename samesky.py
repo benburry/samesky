@@ -74,22 +74,26 @@ def writeimage():
         camera.capture(os.path.join(app.static_folder, '%s.jpg' % now.strftime(file_fmt)), format='jpeg', thumbnail=None)
         camera.capture(tmpgifpath, format='gif')
 
-    prev_gif_filename = '%s.gif' % (now - datetime.timedelta(minutes=1)).strftime(file_fmt)
-    prev_gifpath = os.path.join(app.static_folder, prev_gif_filename)
+    for x in xrange(1, 6):
+        prev_gif_filename = '%s.gif' % (now - datetime.timedelta(minutes=x)).strftime(file_fmt)
+        prev_gifpath = os.path.join(app.static_folder, prev_gif_filename)
+        if os.path.isfile(prev_gifpath):
+            break
+
     gifpath = os.path.join(app.static_folder, '%s.gif' % now.strftime(file_fmt))
-    try:
-        prev_gif_info = subprocess.check_output(['/usr/bin/gifsicle', '-I', prev_gifpath])
+    if os.path.isfile(prev_gifpath):
+        try:
+            prev_gif_info = subprocess.check_output(['/usr/bin/gifsicle', '-I', prev_gifpath])
 
-        p = re.compile(r'%s (?P<framecount>\d+) image' % prev_gif_filename)
-        m = p.search(prev_gif_info)
-        framecount = None
-        if m:
-            framecount = m.group('framecount')
-
-            if int(m.group('framecount')) >= 120:
-                subprocess.call(['/usr/bin/gifsicle', '-b', prev_gifpath, '--delete', '"#0"'])
-        subprocess.call(['/usr/bin/gifsicle', '-i', prev_gifpath, '--append', tmpgifpath, '--loopcount=forever', '--colors', '256', '-o', gifpath])
-    except:
+            p = re.compile(r'%s (?P<framecount>\d+) image' % prev_gif_filename)
+            m = p.search(prev_gif_info)
+            if m:
+                if int(m.group('framecount')) >= 120:
+                    subprocess.call(['/usr/bin/gifsicle', '-b', prev_gifpath, '--delete', '"#0"'])
+            subprocess.call(['/usr/bin/gifsicle', '-i', prev_gifpath, '--append', tmpgifpath, '--loopcount=forever', '--colors', '256', '-o', gifpath])
+        except:
+            shutil.copy(tmpgifpath, gifpath)
+    else:
         shutil.copy(tmpgifpath, gifpath)
     os.remove(tmpgifpath)
 
